@@ -11,3 +11,5 @@
 /updater.py
 /updater.spec
 /test/
+/__pycache__/
+/functions/__pycache__/
