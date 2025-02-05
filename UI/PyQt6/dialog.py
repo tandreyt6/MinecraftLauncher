@@ -664,7 +664,7 @@ class ModManager(QWidget):
         self.scrollwidget.setLayout(self.mods_layout)
         self.expanded_widget = None
         self.v = QVBoxLayout(self)
-        self.backButton = QPushButton("back")
+        self.backButton = QPushButton(memory.get("translate", {}).get("Back", "Back"))
         self.top_h = QHBoxLayout()
         self.top_h.addWidget(self.backButton)
         self.top_h.addStretch()

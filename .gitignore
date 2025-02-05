@@ -11,6 +11,10 @@
 /updater.py
 /updater.spec
 /gitbuild.py
+/certificateGenerate.py
+/buildParams.py
 /test/
 /__pycache__/
 /functions/__pycache__/
+/private_key.pem
+/selfsigned_cert.pem

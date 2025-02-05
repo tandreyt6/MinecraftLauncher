@@ -7,7 +7,7 @@ import subprocess
 from minecraft_launcher_lib import fabric, forge, quilt, utils
 
 class VanillaLauncher:
-    def __init__(self, version, path=None, java="java", game_dir=None, username="Player", token=None, uuid="123e4567-e89b-12d3-a456-426614174000", server="0000000000000000000", port=None, javaArgv=[]):
+    def __init__(self, version, path=None, java="java", game_dir=None, username="Player", token=None, uuid="123e4567-e89b-12d3-a456-426614174000", server="0000000000000000000", port=None, javaArgv=[], consoleEnable=True):
         self.version = version
         self.path = path
         self.java = java
@@ -19,6 +19,7 @@ class VanillaLauncher:
         self.port = port
         self.procces = None
         self.javaArgv = javaArgv
+        self.consoleEnable = consoleEnable
 
     def run(self, inThread=True):
         def launch():
@@ -44,7 +45,10 @@ class VanillaLauncher:
             cmd = minecraft_launcher_lib.command.get_minecraft_command(self.version.split("-")[0], self.path, options)
             print(cmd)
             try:
-                self.procces = subprocess.Popen(cmd)
+                if self.consoleEnable:
+                    self.procces = subprocess.Popen(cmd, creationflags=subprocess.CREATE_NEW_CONSOLE)
+                else:
+                    self.procces = subprocess.Popen(cmd, creationflags=subprocess.CREATE_NO_WINDOW)
                 self.procces.wait()
             except Exception as e:
                 print(f"Error launch minecraft client: {e}")
@@ -59,8 +63,8 @@ class VanillaLauncher:
 
 class FabricLauncher(VanillaLauncher):
     def __init__(self, version, fabric_version, path=None, java="java", game_dir=None, username="Player", token=None, uuid="123e4567-e89b-12d3-a456-426614174000", server=None,
-                 port=None, javaArgv=[]):
-        super().__init__(version, path, java, game_dir, username, token, uuid, server, port, javaArgv)
+                 port=None, javaArgv=[], consoleEnable=True):
+        super().__init__(version, path, java, game_dir, username, token, uuid, server, port, javaArgv, consoleEnable)
         self.fabric_version = fabric_version
         self.procces = None
 
@@ -87,7 +91,10 @@ class FabricLauncher(VanillaLauncher):
             cmd = minecraft_launcher_lib.command.get_minecraft_command(f"fabric-loader-{self.fabric_version}-{self.version}", self.path, options)
             print(cmd)
             try:
-                self.procces = subprocess.Popen(cmd)
+                if self.consoleEnable:
+                    self.procces = subprocess.Popen(cmd, creationflags=subprocess.CREATE_NEW_CONSOLE)
+                else:
+                    self.procces = subprocess.Popen(cmd, creationflags=subprocess.CREATE_NO_WINDOW)
                 self.procces.wait()
             except Exception as e:
                 print(f"Error launch minecraft client: {e}")
@@ -102,8 +109,8 @@ class FabricLauncher(VanillaLauncher):
 
 class ForgeLauncher(VanillaLauncher):
     def __init__(self, version, forge_version, path=None, java="java", game_dir=None, username="Player", token=None, uuid="123e4567-e89b-12d3-a456-426614174000", server=None,
-                 port=None, javaArgv=[]):
-        super().__init__(version, path, java, game_dir, username, token, uuid, server, port, javaArgv)
+                 port=None, javaArgv=[], consoleEnable=True):
+        super().__init__(version, path, java, game_dir, username, token, uuid, server, port, javaArgv, consoleEnable)
         self.forge_version = forge_version
         self.procces = None
 
@@ -131,7 +138,10 @@ class ForgeLauncher(VanillaLauncher):
                 f"{self.version}-forge-{self.forge_version}", self.path, options)
             print(cmd)
             try:
-                self.procces = subprocess.Popen(cmd)
+                if self.consoleEnable:
+                    self.procces = subprocess.Popen(cmd, creationflags=subprocess.CREATE_NEW_CONSOLE)
+                else:
+                    self.procces = subprocess.Popen(cmd, creationflags=subprocess.CREATE_NO_WINDOW)
                 self.procces.wait()
             except Exception as e:
                 print(f"Error launch minecraft client: {e}")
@@ -146,8 +156,8 @@ class ForgeLauncher(VanillaLauncher):
 
 class QuiltLauncher(VanillaLauncher):
     def __init__(self, version, quilt_version, path=None, java="java", game_dir=None, username="Player", token=None, uuid="123e4567-e89b-12d3-a456-426614174000", server=None,
-                 port=None, javaArgv=[]):
-        super().__init__(version, path, java, game_dir, username, token, uuid, server, port, javaArgv)
+                 port=None, javaArgv=[], consoleEnable=True):
+        super().__init__(version, path, java, game_dir, username, token, uuid, server, port, javaArgv, consoleEnable)
         self.quilt_version = quilt_version
         self.procces = None
 
@@ -175,7 +185,10 @@ class QuiltLauncher(VanillaLauncher):
                 f"quilt-loader-{self.quilt_version}-{self.version}", self.path, options)
             print(cmd)
             try:
-                self.procces = subprocess.Popen(cmd)
+                if self.consoleEnable:
+                    self.procces = subprocess.Popen(cmd, creationflags=subprocess.CREATE_NEW_CONSOLE)
+                else:
+                    self.procces = subprocess.Popen(cmd, creationflags=subprocess.CREATE_NO_WINDOW)
                 self.procces.wait()
             except Exception as e:
                 print(f"Error launch minecraft client: {e}")

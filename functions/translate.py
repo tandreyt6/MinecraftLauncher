@@ -82,6 +82,7 @@ ru = {
     "notAlltarnateStart": "Параллельный запуск пока не доступен!",
     "finishingUpdate": "Завершаю обновление...",
     "finishedUpdate": "Обновление завершено!",
+    "showJavaConsole": "Показать java консоль",
 }
 
 en = {
@@ -170,4 +171,5 @@ en = {
     "shortcutCreateBuild": "The shortcut has been successfully created in the build folder!",
     "finishingUpdate": "Finishing update...",
     "finishedUpdate": "Update completed!",
+    "showJavaConsole": "Show Java Console",
 }

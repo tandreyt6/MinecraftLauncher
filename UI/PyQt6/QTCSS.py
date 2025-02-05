@@ -159,6 +159,9 @@ main_dark = """
     #ProfileArea {
         background-color: #2b2b2b;
     }
+    #VersionProgramm {
+        background-color: #2b2b2b;
+    }
 """
 
 SiteCss = """

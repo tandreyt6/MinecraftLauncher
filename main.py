@@ -18,6 +18,7 @@ import os
 import subprocess
 import sys
 import psutil
+import buildParams
 
 from UI.PyQt6 import MainWindow, QTCSS, VersionsPage, SettingsPage, dialog, ProfilePage
 from PyQt6.QtWidgets import *
@@ -36,20 +37,17 @@ def qt_message_handler(mode, context, message):
 qInstallMessageHandler(qt_message_handler)
 
 
-
-
 class UIUpdateThread(QThread):
-    """Thread that periodically calls app.processEvents() to keep UI responsive."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.timer = QTimer()
-        self.timer.setInterval(100)  # Интервал обновления
+        self.timer.setInterval(100)
         self.timer.timeout.connect(QApplication.processEvents)
 
     def run(self):
-        self.timer.start()  # Запускаем таймер
-        self.exec()  # Запуск потока обработки событий
+        self.timer.start()
+        self.exec()
 
     def stop(self):
         self.timer.stop()
@@ -66,8 +64,10 @@ class Worker(QObject):
         self.method()
         self.finished.emit()
 
+
 class LauncherThread(QThread):
     finish = pyqtSignal()
+
     def setParams(self, runer, dir):
         self.run = runer
         self.dir = dir
@@ -81,12 +81,10 @@ class LauncherThread(QThread):
             print("An error occurred when launching minecraft! Error code: " + str(proc.returncode))
         return
 
-# class MainObject
 
-version = "1.2.1"
-author = "Tandreyt6"
-memory.put("VersionProgramm", version)
-memory.put("AuthorProgramm", author)
+memory.put("VersionProgramm", buildParams.VERSION)
+memory.put("AuthorProgramm", buildParams.AUTHOR)
+
 
 class Main:
     def __init__(self):
@@ -105,7 +103,9 @@ class Main:
         print(settings.getData("lang", "en"))
         if settings.getData("lang", "en") == "ru":
             memory.put("translate", translate.ru)
+            memory.put("lang", "ru")
         else:
+            memory.put("lang", "en")
             memory.put("translate", translate.en)
         os.makedirs(self.buildsPath, exist_ok=True)
         os.makedirs(self.minecraftCoresFolder, exist_ok=True)
@@ -118,7 +118,7 @@ class Main:
         self.stopIcon = QIcon("./UI/Icons/StopIcon.png")
         self.setting = {"qtcss": QTCSS.main_dark,
                         "minecraftIcon": "./UI/Icons/MinecraftIcon.png",
-                        "minecraftIconIco": os.getcwd()+"/UI/Icons/MinecraftIcon.ico",
+                        "minecraftIconIco": os.getcwd() + "/UI/Icons/MinecraftIcon.ico",
                         "profileIcon": "./UI/Icons/ProfileIcon.png",
                         "versionsIcon": "./UI/Icons/versionsIcon.png",
                         "newsIcon": "./UI/Icons/NewsIcon.png",
@@ -349,7 +349,7 @@ class Main:
         verList = []
         for i in self.buildVersions:
             name = i["path"].split("\\")
-            verList.append("./"+name[-1])
+            verList.append("./" + name[-1])
         print(verList)
         build_combo.addItems(verList)
         layout.addWidget(build_combo)
@@ -370,20 +370,22 @@ class Main:
             if len(build_combo.currentText()) < 1:
                 self.showInfoDil("Error", memory.get("translate", {}).get("noBuildSelected", "No selected build"))
                 return
-            shortcut_file = os.path.join(os.path.expanduser("~"), "Desktop", build_combo.currentText()+".lnk")
+            shortcut_file = os.path.join(os.path.expanduser("~"), "Desktop", build_combo.currentText() + ".lnk")
             if os.path.exists(shortcut_file):
                 create_shortcut(sys.executable, shortcut_file, self.setting[
                     "minecraftIconIco"] if self.selectIcoShortcut is None else self.selectIcoShortcut,
-                                "nogui run "+build_combo.currentText())
-                self.showInfoDil("Done", memory.get("translate", {}).get("shortcutCreateDesktop", "Shortcut -> desktop"))
+                                "nogui run " + build_combo.currentText())
+                self.showInfoDil("Done",
+                                 memory.get("translate", {}).get("shortcutCreateDesktop", "Shortcut -> desktop"))
             else:
                 t = build_combo.currentText().split("/")[-1]
-                shortcut_file = self.buildsPath+"/"+t+"/"+t+".lnk"
+                shortcut_file = self.buildsPath + "/" + t + "/" + t + ".lnk"
                 create_shortcut(sys.executable, shortcut_file, self.setting[
                     "minecraftIconIco"] if self.selectIcoShortcut is None else self.selectIcoShortcut,
                                 "nogui run " + build_combo.currentText())
-                self.showInfoDil("Done", memory.get("translate", {}).get("shortcutCreateBuild", "Shortcut -> build folder"))
-            print("create shortcut "+shortcut_file)
+                self.showInfoDil("Done",
+                                 memory.get("translate", {}).get("shortcutCreateBuild", "Shortcut -> build folder"))
+            print("create shortcut " + shortcut_file)
 
         choose_button = QPushButton(memory.get("translate", {}).get("selectIcoFile", "Select an icon file"))
         choose_button.clicked.connect(choose_ico)
@@ -402,6 +404,7 @@ class Main:
         layout.addLayout(buttons_layout)
 
         dil.exec()
+
     def refreshVersions(self):
         self.versionWidget.display_info(None)
         self.buildVersions.clear()
@@ -484,7 +487,7 @@ class Main:
 
         def keyPressEvent(event):
             print(event.key(), Qt.Key.Key_Enter, Qt.Key.Key_Return)
-            if  event.key() == Qt.Key.Key_Enter or event.key() == Qt.Key.Key_Return:
+            if event.key() == Qt.Key.Key_Enter or event.key() == Qt.Key.Key_Return:
                 okbtn.click()
             elif event.key() == Qt.Key.Key_Escape:
                 closebtn.click()
@@ -561,7 +564,8 @@ class Main:
                 dil.setStyleSheet(QTCSS.dil_dark)
                 v = QVBoxLayout(dil)
                 dil.setWindowTitle("Installer")
-                v.addWidget(QLabel(memory.get("translate", {}).get("specifyMinecraftVersion", "select minecraft version")))
+                v.addWidget(
+                    QLabel(memory.get("translate", {}).get("specifyMinecraftVersion", "select minecraft version")))
                 minecraftVersions = [_["id"] for _ in installer.MinecraftInstaller.list_versions()]
                 print(minecraftVersions)
                 ver = QComboBox()
@@ -658,23 +662,30 @@ class Main:
                 "-Dminecraft.api.services.host=https://invalid.invalid"]
         print("Argv", argv)
         run = None
+        consoleEnable = settings.getData("javaConsoleEnable", False)
         if self.versionWidget.selectedItem.data.get("CoreType").lower() == "vanilla":
-            run = runner.VanillaLauncher(version, self.installFolder, self.javaPath, gameDir, nickname, token=token, uuid=uuid, javaArgv=argv)
+            run = runner.VanillaLauncher(version, self.installFolder, self.javaPath, gameDir, nickname, token=token,
+                                         uuid=uuid, javaArgv=argv, consoleEnable=consoleEnable)
         elif self.versionWidget.selectedItem.data.get("CoreType").lower() == "forge":
-            run = runner.ForgeLauncher(version, coreVersion, self.installFolder, self.javaPath, gameDir, nickname, token=token, uuid=uuid, javaArgv=argv)
+            run = runner.ForgeLauncher(version, coreVersion, self.installFolder, self.javaPath, gameDir, nickname,
+                                       token=token, uuid=uuid, javaArgv=argv, consoleEnable=consoleEnable)
         elif self.versionWidget.selectedItem.data.get("CoreType").lower() == "fabric":
-            run = runner.FabricLauncher(version, coreVersion, self.installFolder, self.javaPath, gameDir, nickname, token=token, uuid=uuid, javaArgv=argv)
+            run = runner.FabricLauncher(version, coreVersion, self.installFolder, self.javaPath, gameDir, nickname,
+                                        token=token, uuid=uuid, javaArgv=argv, consoleEnable=consoleEnable)
         elif self.versionWidget.selectedItem.data.get("CoreType").lower() == "quilt":
-            run = runner.QuiltLauncher(version, coreVersion, self.installFolder, self.javaPath, gameDir, nickname, token=token, uuid=uuid, javaArgv=argv)
+            run = runner.QuiltLauncher(version, coreVersion, self.installFolder, self.javaPath, gameDir, nickname,
+                                       token=token, uuid=uuid, javaArgv=argv, consoleEnable=consoleEnable)
         if run:
             if settings.getData("isHideForLaunch", True):
                 if self.dil:
                     self.dil.close()
                 if self.ui:
                     self.ui.hide()
+
             def show():
                 self.ui.show()
                 del self.runs[gameDir]
+
             tr = LauncherThread(self.MainObject)
             tr.finish.connect(show)
             tr.setParams(run, gameDir)
@@ -711,19 +722,20 @@ class Main:
                 "-Dminecraft.api.services.host=https://invalid.invalid"]
         print("Argv", argv)
         run = None
+        consoleEnable = settings.getData("javaConsoleEnable", False)
 
         if coretype.lower() == "vanilla":
             run = runner.VanillaLauncher(version, self.installFolder, self.javaPath, gameDir, nickname, token=token,
-                                         uuid=uuid, javaArgv=argv)
+                                         uuid=uuid, javaArgv=argv, consoleEnable=consoleEnable)
         elif coretype.lower() == "forge":
             run = runner.ForgeLauncher(version, coreVersion, self.installFolder, self.javaPath, gameDir, nickname,
-                                        token=token, uuid=uuid, javaArgv=argv)
+                                       token=token, uuid=uuid, javaArgv=argv, consoleEnable=consoleEnable)
         elif coretype.lower() == "fabric":
             run = runner.FabricLauncher(version, coreVersion, self.installFolder, self.javaPath, gameDir, nickname,
-                                        token=token, uuid=uuid, javaArgv=argv)
+                                        token=token, uuid=uuid, javaArgv=argv, consoleEnable=consoleEnable)
         elif coretype.lower() == "quilt":
             run = runner.QuiltLauncher(version, coreVersion, self.installFolder, self.javaPath, gameDir, nickname,
-                                        token=token, uuid=uuid, javaArgv=argv)
+                                       token=token, uuid=uuid, javaArgv=argv, consoleEnable=consoleEnable)
         if run:
             def show():
                 del self.runs[gameDir]
@@ -782,12 +794,14 @@ class Main:
         if len(self.runs) > 0:
             trans = memory.get("translate", {})
             res = self.ask_question("Close application", trans.get("whenCloseCloseAll", "Close or Hide?"),
-                                 trans.get("Hide", "Hide"), trans.get("Close", "Close"))
+                                    trans.get("Hide", "Hide"), trans.get("Close", "Close"))
             if res:
                 self.ui.hide()
                 return
-            elif res == False: pass
-            else: return
+            elif res == False:
+                pass
+            else:
+                return
 
         for gameDir in self.runs:
             x: LauncherThread = self.runs.get(gameDir)
@@ -804,6 +818,7 @@ class Main:
         app.closeAllWindows()
         app.exit(0)
         sys.exit(0)
+
 
 def setup_logging():
     log_dir = "logs"
@@ -852,6 +867,7 @@ def checkShortcutAndStart(argv):
         print(f"Error: {e}")
         win.showInfoDil("Error", "Invalid build configuration!")
 
+
 def handle_ping(packet):
     print("Handle ping")
     if packet.get("type", "") == "alt_start":
@@ -859,6 +875,7 @@ def handle_ping(packet):
             win.ui.show()
             win.ui.setWindowState(Qt.WindowState.WindowActive)
         checkShortcutAndStart(packet.get("argv", []))
+
 
 # setup_logging()
 app.handle_packet = handle_ping
@@ -896,16 +913,19 @@ if "end_update" in sys.argv:
         dil = QDialog()
         dil.setStyleSheet(QTCSS.dil_dark)
         dil.setFixedSize(100, 50)
-        dil.show()
         dil.setWindowTitle("Update")
         dil.setWindowIcon(win.WindowIcon)
+
         v = QVBoxLayout(dil)
         lbl = QLabel(memory.get("translate", {}).get("finishingUpdate", "finishing..."))
         v.addWidget(lbl)
+
         close = QPushButton(memory.get("translate", {}).get("Close", "Close"))
         close.clicked.connect(dil.close)
         v.addWidget(close)
         close.setVisible(False)
+
+        dil.show()
         app.processEvents()
 
         with zipfile.ZipFile(update_zip, 'r') as zip_ref:
@@ -913,9 +933,11 @@ if "end_update" in sys.argv:
             print("File `updater.exe` extracted.")
 
         os.remove(update_zip)
-        print(f"{update_zip} remove.")
-        lbl.setText(memory.get("translate", {}).get("finishedUpdate", "finishing..."))
+        print(f"{update_zip} removed.")
+
+        lbl.setText(memory.get("translate", {}).get("finishedUpdate", "Update finished!"))
         close.setVisible(True)
+
         dil.exec()
     else:
         print("not found `update.zip`")
@@ -936,7 +958,5 @@ if not win.checkFreeSpace():
     msg_box.setText("Free disk space is less than 5 GB! This may lead to errors about lack of space!")
     msg_box.setStandardButtons(QMessageBox.StandardButton.Yes)
     msg_box.exec()
-
-
 
 app.exec()

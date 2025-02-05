@@ -78,6 +78,9 @@ class SettingsWidget(QWidget):
     def showConsoleToggle(self, checked):
         settings.setData("showConsole", checked)
 
+    def showJavaConsoleToggle(self, checked):
+        settings.setData("javaConsoleEnable", checked)
+
     def langChange(self):
         lang = "ru" if self.language_combo.currentIndex() == 0 else "en"
         print(lang)
@@ -133,6 +136,10 @@ class SettingsWidget(QWidget):
         self.console_checkbox.setChecked(settings.getData("showConsole", False))
         self.console_checkbox.toggled.connect(self.showConsoleToggle)
 
+        self.console_checkbox_java = AnimatedToggle()
+        self.console_checkbox_java.setChecked(settings.getData("javaConsoleEnable", False))
+        self.console_checkbox_java.toggled.connect(self.showJavaConsoleToggle)
+
         # layout.addWidget()
         self.javaHelp = QLabel(memory.get('translate', {}).get("javaSettingsHelp", ""))
 
@@ -146,6 +153,7 @@ class SettingsWidget(QWidget):
         layout.addRow(self.javaHelp)
         layout.addRow(self.select_java, self.java_input)
         layout.addRow(self.console_checkbox, QLabel(memory.get('translate', {}).get("showConsole", "Show console")))
+        layout.addRow(self.console_checkbox_java, QLabel(memory.get('translate', {}).get("showJavaConsole", "Show console java")))
 
         # layout.addStretch()
 
@@ -203,6 +211,7 @@ class SettingsWidget(QWidget):
         layout = QVBoxLayout(widget)
 
         self.about_text = QPlainTextEdit()
+        self.about_text.setObjectName("VersionProgramm")
         self.about_text.setReadOnly(True)
         self.about_text.setStyleSheet(self.css)
         ver = memory.get("VersionProgramm")
@@ -215,7 +224,6 @@ class SettingsWidget(QWidget):
         self.settings_stack.addWidget(widget)
 
 
-# Пример использования
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     settings_widget = SettingsWidget()
