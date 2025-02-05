@@ -1,0 +1,10 @@
+/.idea/
+/build/
+/builds/
+/dist/
+/logs/
+/versions/
+/ScriptInstaller.iss
+/MinecraftLauncher-Installer.exe
+/InsAr5Con.exe
+/LauncherSettings.json
