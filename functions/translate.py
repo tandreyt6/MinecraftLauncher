@@ -83,6 +83,7 @@ ru = {
     "finishingUpdate": "Завершаю обновление...",
     "finishedUpdate": "Обновление завершено!",
     "showJavaConsole": "Показать java консоль",
+    "checkUpdates": "Обновления",
 }
 
 en = {
@@ -172,4 +173,5 @@ en = {
     "finishingUpdate": "Finishing update...",
     "finishedUpdate": "Update completed!",
     "showJavaConsole": "Show Java Console",
+    "checkUpdates": "Get update`s",
 }

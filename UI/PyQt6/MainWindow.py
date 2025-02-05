@@ -208,7 +208,7 @@ class Window(QMainWindow):
         self.horizontal_layout = QHBoxLayout()
         self.main_layout.addLayout(self.horizontal_layout)
 
-        self.lpBGPanel = ExpandableWidget(self, 40, 110, False)
+        self.lpBGPanel = ExpandableWidget(self, 40, 120, False)
         self.central_layout.addWidget(self.lpBGPanel)
         self.right_panel = QWidget()
         self.lpBGPanel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -275,6 +275,14 @@ class Window(QMainWindow):
         self.left_panel_layout.addWidget(self.settingsBtn)
 
         self.left_panel_layout.addStretch()
+
+        self.checkUpdatesBtn = QPushButton(f"{memory.get('translate', {}).get('checkUpdates', 'Check updates')}")
+        self.checkUpdatesBtn.setStyleSheet("text-align: left; padding-left: 10px;")
+        self.lpBGPanel.frame_updated.connect(self.checkUpdatesBtn.setFixedWidth)
+        self.checkUpdatesBtn.setIcon(QIcon(self.settings.get("reloadIcon")))
+        self.checkUpdatesBtn.setFixedWidth(100)
+        self.checkUpdatesBtn.setIconSize(QSize(20, 20))
+        self.left_panel_layout.addWidget(self.checkUpdatesBtn)
 
         self.reloadBtn = QPushButton(f"{memory.get('translate', {}).get('reloadBtn', '    Reload  ')}")
         self.reloadBtn.setStyleSheet("text-align: left; padding-left: 10px;")

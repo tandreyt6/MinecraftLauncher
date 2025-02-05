@@ -4,6 +4,7 @@ import signal
 import time
 import zipfile
 
+import requests
 from PyQt6.QtNetwork import QTcpSocket
 
 from functions.Core import SingleInstanceApp
@@ -85,8 +86,10 @@ class LauncherThread(QThread):
 memory.put("VersionProgramm", buildParams.VERSION)
 memory.put("AuthorProgramm", buildParams.AUTHOR)
 
+GITHUB_REPO = 'tandreyt6/MinecraftLauncher'
 
 class Main:
+
     def __init__(self):
         self.MainObject = QObject()
         self.runs = {}
@@ -251,6 +254,55 @@ class Main:
                     shutil.rmtree(path)
                 self.refreshVersions()
 
+
+    def get_latest_version(self):
+        url = f'https://api.github.com/repos/{GITHUB_REPO}/releases/latest'
+        response = requests.get(url)
+        if response.status_code == 200:
+            release = response.json()
+            return release['tag_name']
+        else:
+            print('Error fetching latest version.')
+            return None
+
+    def show_update_dialog(self):
+        ver = self.get_latest_version()
+        update_available = False
+        if ver:
+            update_available = buildParams.VERSION != ver
+
+        dialog = QDialog()
+        dialog.setStyleSheet(QTCSS.dil_dark)
+        dialog.setWindowTitle("Update Check")
+        dialog.setFixedSize(300, 150)
+
+        layout = QVBoxLayout(dialog)
+
+        if update_available:
+            label = QLabel("Update available. Do you want to update? "+ver)
+            layout.addWidget(label)
+
+            h1 = QHBoxLayout()
+
+            update_button = QPushButton("Update")
+            update_button.clicked.connect(lambda: print("Updating..."))  # Здесь будет логика обновления
+            h1.addWidget(update_button)
+
+            cancel_button = QPushButton("Cancel")
+            cancel_button.clicked.connect(dialog.close)
+            h1.addWidget(cancel_button)
+
+            layout.addLayout(h1)
+        else:
+            label = QLabel("No updates available.")
+            layout.addWidget(label)
+
+            close_button = QPushButton("Close")
+            close_button.clicked.connect(dialog.close)
+            layout.addWidget(close_button)
+
+        dialog.exec()
+
     def initUI(self):
         self.WindowIcon = QIcon("./UI/Icons/MinecraftIcon.ico")
         self.ui = MainWindow.Window(self.setting)
@@ -312,6 +364,8 @@ class Main:
         self.settingsWidget = SettingsPage.SettingsWidget(self.ui, QTCSS.main_dark, self.setting, self)
         index2 = self.ui.addCentralWidget(self.settingsWidget)
         self.ui.settingsBtn.clicked.connect(lambda: self.ui.setCurrentCentralIndex(index2))
+
+        self.ui.checkUpdatesBtn.clicked.connect(self.show_update_dialog)
 
         self.ui.allMomentalClose()
         self.ui.openMomentalIndex(0)
@@ -516,11 +570,20 @@ class Main:
         if True:
             self.ui.setCurrentCentralIndex(self.dilIndex)
             app.processEvents()
-
-            fabricVersions = installer.FabricInstaller.list_versions()
-            forgeVersions = installer.ForgeInstaller.list_versions()
-            quiltVersions = installer.QuiltInstaller.list_versions()
-            minecraftVersions = installer.MinecraftInstaller.list_versions()
+            try:
+                fabricVersions = installer.FabricInstaller.list_versions()
+                app.processEvents()
+                forgeVersions = installer.ForgeInstaller.list_versions()
+                app.processEvents()
+                quiltVersions = installer.QuiltInstaller.list_versions()
+                app.processEvents()
+                minecraftVersions = installer.MinecraftInstaller.list_versions()
+                app.processEvents()
+            except:
+                fabricVersions = []
+                forgeVersions = []
+                quiltVersions = []
+                minecraftVersions = []
             print(fabricVersions)
             print(forgeVersions)
             print(quiltVersions)
