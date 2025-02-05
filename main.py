@@ -2,6 +2,7 @@ import ctypes
 import shutil
 import signal
 import time
+import zipfile
 
 from PyQt6.QtNetwork import QTcpSocket
 
@@ -332,6 +333,7 @@ class Main:
 
     def createShortcutBtn(self):
         dil = QDialog()
+        dil.setStyleSheet(QTCSS.dil_dark)
         dil.setWindowTitle(
             memory.get("translate", {}).get("createShortcut", "Create Shortcut"))
         dil.setWindowIcon(self.WindowIcon)
@@ -871,7 +873,6 @@ if not "debug" in sys.argv:
     if sys.platform == "win32":
         ctypes.windll.kernel32.FreeConsole()
 
-
 client_socket = QTcpSocket()
 client_socket.connectToHost("127.0.0.1", app.PORT)
 data = {"argv": sys.argv, "type": "alt_start"}
@@ -887,8 +888,38 @@ if client_socket.waitForConnected(100):
 else:
     print("NoConnected!")
 
-
 win = Main()
+print(sys.argv, "argv")
+if "end_update" in sys.argv:
+    update_zip = "./update.zip"
+    if os.path.exists(update_zip):
+        dil = QDialog()
+        dil.setStyleSheet(QTCSS.dil_dark)
+        dil.setFixedSize(100, 50)
+        dil.show()
+        dil.setWindowTitle("Update")
+        dil.setWindowIcon(win.WindowIcon)
+        v = QVBoxLayout(dil)
+        lbl = QLabel(memory.get("translate", {}).get("finishingUpdate", "finishing..."))
+        v.addWidget(lbl)
+        close = QPushButton(memory.get("translate", {}).get("Close", "Close"))
+        close.clicked.connect(dil.close)
+        v.addWidget(close)
+        close.setVisible(False)
+        app.processEvents()
+
+        with zipfile.ZipFile(update_zip, 'r') as zip_ref:
+            zip_ref.extract("updater.exe", "./")
+            print("File `updater.exe` extracted.")
+
+        os.remove(update_zip)
+        print(f"{update_zip} remove.")
+        lbl.setText(memory.get("translate", {}).get("finishedUpdate", "finishing..."))
+        close.setVisible(True)
+        dil.exec()
+    else:
+        print("not found `update.zip`")
+
 app.startServer()
 print(sys.executable)
 

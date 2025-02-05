@@ -80,6 +80,8 @@ ru = {
     "selectIcoFile": "Выберите файл иконки",
     "noBuildSelected": "Сборка не выбрана.",
     "notAlltarnateStart": "Параллельный запуск пока не доступен!",
+    "finishingUpdate": "Завершаю обновление...",
+    "finishedUpdate": "Обновление завершено!",
 }
 
 en = {
@@ -166,4 +168,6 @@ en = {
     "notAlltarnateStart": "Parallel launch is not available yet!",
     "shortcutCreateDesktop": "The shortcut has been successfully created on the desktop!",
     "shortcutCreateBuild": "The shortcut has been successfully created in the build folder!",
+    "finishingUpdate": "Finishing update...",
+    "finishedUpdate": "Update completed!",
 }
