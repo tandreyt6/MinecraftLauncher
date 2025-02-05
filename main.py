@@ -267,7 +267,8 @@ class Main:
 
     def show_update_dialog(self):
         def update():
-           if self.close(True):
+            print("update...")
+            if self.close(True):
                subprocess.Popen([os.getcwd()+"/updater.exe", memory.get("lang", "en")])
                app.closeAllWindows()
                app.exit(0)
