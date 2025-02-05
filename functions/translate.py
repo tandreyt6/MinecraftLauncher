@@ -87,6 +87,7 @@ ru = {
     "updateAvailable": "Доступно обновление! Хотите обновиться до версии {version}?",
     "noUpdateAvailable": "У вас установлена последняя версия!",
     "Update": "Обновить",
+    "toggleSetCheckUpdate": "Проверять обновления приложения автоматически?",
 }
 
 en = {
@@ -180,4 +181,5 @@ en = {
     "updateAvailable": "An update is available! Do you want to update to version {version}?",
     "noUpdateAvailable": "You have the latest version installed!",
     "Update": "Update",
+    "toggleSetCheckUpdate": "Check for application updates automatically?",
 }

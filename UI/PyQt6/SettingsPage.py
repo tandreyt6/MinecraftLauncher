@@ -81,6 +81,9 @@ class SettingsWidget(QWidget):
     def showJavaConsoleToggle(self, checked):
         settings.setData("javaConsoleEnable", checked)
 
+    def setCheckUpdate(self, checked):
+        settings.setData("autoCheckUpdate", checked)
+
     def langChange(self):
         lang = "ru" if self.language_combo.currentIndex() == 0 else "en"
         print(lang)
@@ -114,8 +117,14 @@ class SettingsWidget(QWidget):
         self.toggle_use_tans_anim.setChecked(settings.getData("canUseAnimPage", True))
         self.toggle_use_tans_anim.toggled.connect(self.toggle_anim_page)
 
+        self.toggle_check_updates = AnimatedToggle()
+        self.toggle_check_updates.setChecked(settings.getData("autoCheckUpdate", True))
+        self.toggle_check_updates.toggled.connect(self.setCheckUpdate)
+
         layout.addRow(self.toggle_use_tans_anim, QLabel(memory.get('translate', {}).get("toggleUsePageAnim",
                                                                                         "Use transition animation (experimental)")))
+        layout.addRow(self.toggle_check_updates, QLabel(memory.get('translate', {}).get("toggleSetCheckUpdate",
+                                                                                        "auto check update")))
 
         # layout.addStretch()
 
@@ -124,10 +133,11 @@ class SettingsWidget(QWidget):
     def selectJavaDil(self):
         dil,_ = QFileDialog.getOpenFileName(self, "Select java", "C:/Program Files/Java/", "exe files (*.exe)")
         if dil:
-            settings.setData("javaPath", dil)
             self.java_input.setText(dil)
-            self.main.javaPath = dil
 
+    def setJavaPathText(self, text):
+        settings.setData("javaPath", text)
+        self.main.javaPath = text
     def add_advanced_settings(self):
         widget = QWidget()
         layout = QFormLayout(widget)
@@ -145,6 +155,7 @@ class SettingsWidget(QWidget):
 
         self.java_input = QLineEdit()
         self.java_input.setText(str(settings.getData("javaPath", "java")))
+        self.java_input.textChanged.connect(self.setJavaPathText)
         self.java_input.setFixedHeight(30)
         self.select_java = QPushButton(memory.get('translate', {}).get("SelectView", "Select"))
         self.select_java.clicked.connect(self.selectJavaDil)

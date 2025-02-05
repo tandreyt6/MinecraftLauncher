@@ -265,7 +265,7 @@ class Main:
             print('Error fetching latest version.')
             return None
 
-    def show_update_dialog(self):
+    def show_update_dialog(self, noShowIfNoUpdates=False):
         def update():
             print("update...")
             if self.close(True):
@@ -275,18 +275,19 @@ class Main:
                sys.exit(0)
         ver = self.get_latest_version()
         update_available = False
+        print("Last version:", ver, buildParams.VERSION)
         if ver:
             update_available = buildParams.VERSION != ver
 
         dialog = QDialog()
         dialog.setStyleSheet(QTCSS.dil_dark)
         dialog.setWindowTitle("Update Check")
-        dialog.setFixedSize(300, 150)
+        dialog.setFixedSize(370, 150)
 
         layout = QVBoxLayout(dialog)
 
         if update_available:
-            label = QLabel(memory.get("translate", {}).get("updateAvailable", "Update available!"))
+            label = QLabel(memory.get("translate", {}).get("updateAvailable", "Update available!").format(version=ver))
             layout.addWidget(label)
 
             h1 = QHBoxLayout()
@@ -301,6 +302,7 @@ class Main:
 
             layout.addLayout(h1)
         else:
+            if noShowIfNoUpdates: return
             label = QLabel(memory.get("translate", {}).get("noUpdateAvailable", "No update available!"))
             layout.addWidget(label)
 
@@ -1031,4 +1033,7 @@ if not win.checkFreeSpace():
     msg_box.setStandardButtons(QMessageBox.StandardButton.Yes)
     msg_box.exec()
 
+app.processEvents()
+if settings.getData("autoCheckUpdate", True):
+    win.show_update_dialog(True)
 app.exec()
