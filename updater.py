@@ -7,7 +7,7 @@ from zipfile import ZipFile
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QProgressBar, QLabel
 
-os.chdir("./test/")
+# os.chdir("./test/")
 
 GITHUB_REPO = 'tandreyt6/MinecraftLauncher'
 CURRENT_VERSION = '1.2.1'
@@ -95,7 +95,7 @@ class UpdateThread(QThread):
             self.finished_update.emit("error get updates.")
             return
         print(f'Last version: {latest_version}')
-        if latest_version != CURRENT_VERSION:
+        if True:
             print('update...')
             if assets:
                 download_and_update(assets, self.update_progress)
@@ -103,9 +103,7 @@ class UpdateThread(QThread):
                 print(translations_used['no_files_found'])
             self.finished_update.emit(translations_used['update_completed'])
             launch_launcher()
-        else:
-            print(translations_used['version_match'])
-            self.finished_update.emit(translations_used['version_match'])
+
     def update_progress(self, downloaded, total):
         if total == 0:
             progress_value = 100
