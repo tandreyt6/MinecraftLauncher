@@ -2,8 +2,8 @@ import os
 import shutil
 import zipfile
 
-if os.path.exists("./dist/Launcher"):
-    shutil.rmtree("./dist/Launcher")
+if os.path.exists("./dist/"):
+    shutil.rmtree("./dist/")
 
 p = r"pyinstaller"
 os.system(p+" main.spec")
