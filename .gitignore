@@ -8,4 +8,6 @@
 /MinecraftLauncher-Installer.exe
 /InsAr5Con.exe
 /LauncherSettings.json
+/updater.py
+/updater.spec
 /test/
