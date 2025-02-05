@@ -10,6 +10,7 @@
 /LauncherSettings.json
 /updater.py
 /updater.spec
+/gitbuild.py
 /test/
 /__pycache__/
 /functions/__pycache__/
