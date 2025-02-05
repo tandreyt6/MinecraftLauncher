@@ -7,6 +7,7 @@
 2. Supports two languages for the interface.
 3. Use the `build.py` script to compile the project.
 4. To launch the launcher and view the interface, use the `main.py` file.
+5. **Windows only**: This launcher is designed to work exclusively on Windows.
 
 ## How to Use:
 ### Windows
