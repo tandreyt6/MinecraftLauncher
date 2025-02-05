@@ -84,6 +84,9 @@ ru = {
     "finishedUpdate": "Обновление завершено!",
     "showJavaConsole": "Показать java консоль",
     "checkUpdates": "Обновления",
+    "updateAvailable": "Доступно обновление! Хотите обновиться до версии {version}?",
+    "noUpdateAvailable": "У вас установлена последняя версия!",
+    "Update": "Обновить",
 }
 
 en = {
@@ -174,4 +177,7 @@ en = {
     "finishedUpdate": "Update completed!",
     "showJavaConsole": "Show Java Console",
     "checkUpdates": "Get update`s",
+    "updateAvailable": "An update is available! Do you want to update to version {version}?",
+    "noUpdateAvailable": "You have the latest version installed!",
+    "Update": "Update",
 }

@@ -266,6 +266,12 @@ class Main:
             return None
 
     def show_update_dialog(self):
+        def update():
+           if self.close(True):
+               subprocess.Popen([os.getcwd()+"/updater.exe", memory.get("lang", "en")])
+               app.closeAllWindows()
+               app.exit(0)
+               sys.exit(0)
         ver = self.get_latest_version()
         update_available = False
         if ver:
@@ -279,25 +285,25 @@ class Main:
         layout = QVBoxLayout(dialog)
 
         if update_available:
-            label = QLabel("Update available. Do you want to update? "+ver)
+            label = QLabel(memory.get("translate", {}).get("updateAvailable", "Update available!"))
             layout.addWidget(label)
 
             h1 = QHBoxLayout()
 
-            update_button = QPushButton("Update")
-            update_button.clicked.connect(lambda: print("Updating..."))  # Здесь будет логика обновления
+            update_button = QPushButton(memory.get("translate", {}).get("Update", "Update"))
+            update_button.clicked.connect(update)
             h1.addWidget(update_button)
 
-            cancel_button = QPushButton("Cancel")
+            cancel_button = QPushButton(memory.get("translate", {}).get("Cancel", "Cancel"))
             cancel_button.clicked.connect(dialog.close)
             h1.addWidget(cancel_button)
 
             layout.addLayout(h1)
         else:
-            label = QLabel("No updates available.")
+            label = QLabel(memory.get("translate", {}).get("noUpdateAvailable", "No update available!"))
             layout.addWidget(label)
 
-            close_button = QPushButton("Close")
+            close_button = QPushButton(memory.get("translate", {}).get("Close", "Close"))
             close_button.clicked.connect(dialog.close)
             layout.addWidget(close_button)
 
@@ -853,18 +859,18 @@ class Main:
         except:
             self.ui.main_area.loadHtml("<h1>Couldn't download the data!</h1>")
 
-    def close(self):
+    def close(self, noExit=False):
         if len(self.runs) > 0:
             trans = memory.get("translate", {})
             res = self.ask_question("Close application", trans.get("whenCloseCloseAll", "Close or Hide?"),
                                     trans.get("Hide", "Hide"), trans.get("Close", "Close"))
             if res:
                 self.ui.hide()
-                return
+                return False
             elif res == False:
                 pass
             else:
-                return
+                return False
 
         for gameDir in self.runs:
             x: LauncherThread = self.runs.get(gameDir)
@@ -878,6 +884,8 @@ class Main:
         self.ui.hide()
         app.processEvents()
         time.sleep(0.5)
+        if noExit:
+            return True
         app.closeAllWindows()
         app.exit(0)
         sys.exit(0)
